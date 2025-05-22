@@ -1,0 +1,28 @@
+name: Docs pipeline
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1) Split longform into pages
+      - name: Split longform
+        run: python scripts/split_longform.py
+
+      # 2) Render Mermaid diagrams ➜ SVG
+      - run: npm install -g @mermaid-js/mermaid-cli
+      - run: |
+          for f in diagrams/*.mmd; do
+            mmdc -i "$f" -o "${f%.mmd}.svg"
+          done
+
+      # 3) Auto-commit generated pages & diagrams
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: build docs & diagrams"
+          file_pattern: |
+            diagrams/*.svg
+            */*.md
+            */*/*.md

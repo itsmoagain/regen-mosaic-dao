@@ -1,0 +1,6 @@
+flowchart TD
+  subgraph Local_Node
+    Input[Field Data] --> Enricher[Climate Oracle] --> Cache[(Insight Cache)]
+  end
+  Cache --> Mesh["🌐 Federated Mesh"]
+  Mesh --> Hypercert["🪙 Hypercert Mint"]
